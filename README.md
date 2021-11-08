@@ -68,6 +68,7 @@ Attributes:
 | `paddingFocus` | Alignment | settings padding of the focus in target |
 | `focusAnimationDuration` | Duration | override the widget's global focus animation duration |
 | `pulseVariation` | Tween | override interval pulse animation |
+| `pulseEnable` | bool | enable/disable pulse animation |
 
 ### Creating contents (ContentTarget)
 
@@ -78,6 +79,7 @@ Attributes:
 | Attribute | Type | Description |
 | --- | --- | --- |
 | `align` | AlignContent | With this attribute you determine in which region to display the content in relation to the focused widget (top,bottom,left,right) |
+| `padding` | EdgeInsets | Padding of the content |
 | `child` | Widget | Content you want to be displayed |
 | `builder` | Widget | Content you want to be displayed |
 | `customPosition` | CustomTargetContentPosition | Add custom position when `align` is AlignContent.custom |
