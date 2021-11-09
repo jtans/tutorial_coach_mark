@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tutorial_coach_mark/src/target/target_content.dart';
 import 'package:tutorial_coach_mark/src/target/target_focus.dart';
+import 'package:tutorial_coach_mark/src/target/target_position.dart';
 import 'package:tutorial_coach_mark/src/util.dart';
 import 'package:tutorial_coach_mark/src/widgets/animated_focus_light.dart';
 
@@ -24,6 +25,7 @@ class TutorialCoachMarkWidget extends StatefulWidget {
     this.pulseVariation,
     this.pulseEnable = true,
     this.skipWidget,
+    this.lightEnable = false,
   })  : assert(targets.length > 0),
         super(key: key);
 
@@ -43,14 +45,14 @@ class TutorialCoachMarkWidget extends StatefulWidget {
   final Duration? pulseAnimationDuration;
   final Tween<double>? pulseVariation;
   final bool pulseEnable;
+  final bool lightEnable;
   final Widget? skipWidget;
 
   @override
   TutorialCoachMarkWidgetState createState() => TutorialCoachMarkWidgetState();
 }
 
-class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
-    implements TutorialCoachMarkController {
+class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget> implements TutorialCoachMarkController {
   final GlobalKey<AnimatedFocusLightState> _focusLightKey = GlobalKey();
   bool showContent = false;
   TargetFocus? currentTarget;
@@ -72,6 +74,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             pulseAnimationDuration: widget.pulseAnimationDuration,
             pulseVariation: widget.pulseVariation,
             pulseEnable: widget.pulseEnable,
+            lightEnable: widget.lightEnable,
             clickTarget: (target) {
               widget.clickTarget?.call(target);
             },
@@ -122,9 +125,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
     double haloHeight;
 
     if (currentTarget!.shape == ShapeLightFocus.Circle) {
-      haloWidth = target.size.width > target.size.height
-          ? target.size.width
-          : target.size.height;
+      haloWidth = target.size.width > target.size.height ? target.size.width : target.size.height;
       haloHeight = haloWidth;
     } else {
       haloWidth = target.size.width;
@@ -154,8 +155,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
             weight = MediaQuery.of(context).size.width;
             left = 0;
             top = null;
-            bottom = haloHeight +
-                (MediaQuery.of(context).size.height - positioned.dy);
+            bottom = haloHeight + (MediaQuery.of(context).size.height - positioned.dy);
           }
           break;
         case ContentAlign.left:
@@ -176,10 +176,18 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           break;
         case ContentAlign.custom:
           {
-            left = i.customPosition!.left;
-            top = i.customPosition!.top;
-            bottom = i.customPosition!.bottom;
-            weight = MediaQuery.of(context).size.width;
+            final p = i.customPositionBuilder?.call(target);
+            if (p != null) {
+              left = p.left;
+              top = p.top;
+              bottom = p.bottom;
+              weight = MediaQuery.of(context).size.width;
+            } else {
+              left = i.customPosition!.left;
+              top = i.customPosition!.top;
+              bottom = i.customPosition!.bottom;
+              weight = MediaQuery.of(context).size.width;
+            }
           }
           break;
       }
@@ -192,9 +200,7 @@ class TutorialCoachMarkWidgetState extends State<TutorialCoachMarkWidget>
           width: weight,
           child: Padding(
             padding: i.padding,
-            child: i.builder != null
-                ? i.builder?.call(context, this)
-                : (i.child ?? SizedBox.shrink()),
+            child: i.builder != null ? i.builder?.call(context, this) : (i.child ?? SizedBox.shrink()),
           ),
         ),
       );

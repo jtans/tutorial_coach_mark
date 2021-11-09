@@ -20,6 +20,7 @@ class AnimatedFocusLight extends StatefulWidget {
   final Duration? pulseAnimationDuration;
   final Tween<double>? pulseVariation;
   final bool pulseEnable;
+  final bool lightEnable;
 
   const AnimatedFocusLight({
     Key? key,
@@ -35,7 +36,8 @@ class AnimatedFocusLight extends StatefulWidget {
     this.focusAnimationDuration,
     this.pulseAnimationDuration,
     this.pulseVariation,
-    this.pulseEnable = true,
+    this.pulseEnable = true, 
+    this.lightEnable = true,
   })  : assert(targets.length > 0),
         super(key: key);
 
@@ -180,9 +182,10 @@ class AnimatedStaticFocusLightState extends AnimatedFocusLightState {
               Container(
                 width: double.maxFinite,
                 height: double.maxFinite,
-                child: CustomPaint(
+                color: widget.lightEnable == false ? widget.colorShadow.withOpacity(widget.opacityShadow) : null,
+                child: widget.lightEnable ?  CustomPaint(
                   painter: _getPainter(_targetFocus),
-                ),
+                ) : null,
               ),
               Positioned(
                 left:

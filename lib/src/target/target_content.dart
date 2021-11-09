@@ -30,13 +30,16 @@ class TargetContent {
     this.child,
     this.customPosition,
     this.builder,
-  }) : assert(!(align == ContentAlign.custom && customPosition == null));
+    this.customPositionBuilder,
+  }); //: assert(!(align == ContentAlign.custom && (customPosition != null || customPositionBuilder != null)));
 
   final ContentAlign align;
   final EdgeInsets padding;
   final CustomTargetContentPosition? customPosition;
   final Widget? child;
   final TargetContentBuilder? builder;
+  final EdgeInsets Function(TargetPosition? position)? customPositionBuilder;
+
   @override
   String toString() {
     return 'ContentTarget{align: $align, child: $child}';
